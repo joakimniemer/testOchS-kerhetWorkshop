@@ -46,14 +46,11 @@ public final class RealName {
         String cleanName = Utils.cleanAndUnLeet(name);
         String[] words = cleanName.split("\\W+");
 
-        for (var badWord : invalidWords) {
-            for (int i = 0; i < words.length; i++) {
-                if (badWord.contains(words[i])) {
-                    return false;
-                }
+        for (int i = 0; i < words.length; i++) {
+            if (invalidWords.contains(words[i])) {
+                return false;
             }
         }
-
         return true;
     }
 }
