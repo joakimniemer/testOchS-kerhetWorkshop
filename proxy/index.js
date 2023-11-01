@@ -1,4 +1,4 @@
-const joobyPort = 8080
+const joobyPort = 8585
 const vuePort = 3000
 const proxyPort = 8282
 
