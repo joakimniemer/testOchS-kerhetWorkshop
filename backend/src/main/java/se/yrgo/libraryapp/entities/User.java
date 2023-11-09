@@ -4,11 +4,13 @@ public class User {
     private UserId id;
     private String name;
     private String realname;
+    private String passwordHash;
 
-    public User(UserId id, String name, String realname) {
+    public User(UserId id, String name, String realname, String passwordHash) {
         this.id = id;
         this.name = name;
         this.realname = realname;
+        this.passwordHash = passwordHash;
     }
 
     public UserId getId() {
@@ -21,6 +23,10 @@ public class User {
 
     public String getRealname() {
         return realname;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
     @Override
@@ -45,20 +51,17 @@ public class User {
         if (id == null) {
             if (other.id != null)
                 return false;
-        }
-        else if (!id.equals(other.id))
+        } else if (!id.equals(other.id))
             return false;
         if (name == null) {
             if (other.name != null)
                 return false;
-        }
-        else if (!name.equals(other.name))
+        } else if (!name.equals(other.name))
             return false;
         if (realname == null) {
             if (other.realname != null)
                 return false;
-        }
-        else if (!realname.equals(other.realname))
+        } else if (!realname.equals(other.realname))
             return false;
         return true;
     }

@@ -21,7 +21,7 @@ import se.yrgo.libraryapp.entities.Role;
 public class App extends Jooby {
   public App() {
     install(new GracefulShutdown());
-    install(new GuiceModule());
+    install(new GuiceModule(new AppModule()));
     install(new HikariModule());
     install(new FlywayModule());
     install(new JacksonModule());
