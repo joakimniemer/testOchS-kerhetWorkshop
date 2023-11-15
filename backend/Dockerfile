@@ -6,9 +6,6 @@ COPY target/libraryapp-*.jar /opt/library
 COPY src/test/resources/db/migration /opt/library/migration
 # Make sure the script is runnable
 RUN chmod +x /opt/library/entrypoint.sh
-
-# RUN apt update && apt install -y iputils-ping
-
 # Make it possible to access the web service from the outside
 # if we need to debug anything
 EXPOSE 8080/tcp

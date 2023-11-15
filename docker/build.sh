@@ -7,5 +7,5 @@ cd frontend
 npm install
 npm run build
 cd ../docker
-sudo docker compose build
+docker compose build
 echo Done!
