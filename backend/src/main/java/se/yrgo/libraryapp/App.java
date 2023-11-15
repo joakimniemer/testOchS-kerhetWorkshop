@@ -18,6 +18,8 @@ import se.yrgo.libraryapp.controllers.BookController;
 import se.yrgo.libraryapp.controllers.admin.*;
 import se.yrgo.libraryapp.entities.Role;
 
+import java.util.Arrays;
+
 public class App extends Jooby {
   public App() {
     install(new GracefulShutdown());
@@ -63,6 +65,7 @@ public class App extends Jooby {
   }
 
   public static void main(final String[] args) {
+    Arrays.stream(args).forEach(System.out::println);
     runApp(args, App::new);
   }
 }
