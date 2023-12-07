@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import com.radcortez.flyway.test.annotation.H2;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import se.yrgo.libraryapp.entities.User;
 import se.yrgo.libraryapp.entities.UserId;
 
@@ -33,7 +32,7 @@ public class UserDaoIntegrationTest {
         final String username = "test";
         final UserId userId = UserId.of(1);
         UserDao userDao = new UserDao(ds);
-        Optional<User> maybeUser = userDao.get(username);
+        Optional<User> maybeUser = userDao.getByName(username);
         assertThat(maybeUser.isPresent()).isTrue();
         assertThat(maybeUser.get().getId()).isEqualTo(userId);
     }
@@ -42,7 +41,7 @@ public class UserDaoIntegrationTest {
     void getUserByNameNotExisting() {
         final String username = "joakim";
         UserDao userDao = new UserDao(ds);
-        Optional<User> maybeUser = userDao.get(username);
+        Optional<User> maybeUser = userDao.getByName(username);
         assertThat(maybeUser.isPresent()).isFalse();
         assertThat(maybeUser).isEqualTo(Optional.empty());
     }
@@ -57,7 +56,7 @@ public class UserDaoIntegrationTest {
         boolean registerSucceded = userDao.register(username, realname, passwordHash);
 
         assertThat(registerSucceded).isTrue();
-        Optional<User> maybeUser = userDao.get(username);
+        Optional<User> maybeUser = userDao.getByName(username);
         assertThat(maybeUser.isPresent()).isTrue();
     }
 

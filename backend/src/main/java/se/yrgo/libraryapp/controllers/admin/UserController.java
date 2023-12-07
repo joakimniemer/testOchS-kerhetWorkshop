@@ -7,8 +7,6 @@ import io.jooby.annotations.Path;
 import io.jooby.annotations.PathParam;
 import se.yrgo.libraryapp.dao.UserDao;
 import se.yrgo.libraryapp.entities.User;
-import se.yrgo.libraryapp.entities.UserId;
-import se.yrgo.libraryapp.services.UserService;
 
 @Path("/admin/users")
 public class UserController {
@@ -21,9 +19,9 @@ public class UserController {
 
     @GET
     @Path("/{id}")
-    public User getUser(@PathParam String id) {
+    public User getUser(@PathParam int id) {
         try {
-            var user = userDao.get(id);
+            var user = userDao.getById(id);
             return user.orElse(null);
         } catch (NumberFormatException ex) {
             return null;

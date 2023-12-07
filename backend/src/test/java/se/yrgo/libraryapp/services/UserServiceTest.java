@@ -34,7 +34,7 @@ public class UserServiceTest {
         final String password = "password";
         final String passwordHash = password;
         final User user = new User(id, username, realname, passwordHash);
-        when(userDao.get(username)).thenReturn(Optional.of(user));
+        when(userDao.getByName(username)).thenReturn(Optional.of(user));
         UserService userService = new UserService(userDao, encoder);
         assertThat(userService.validate(username,
                 password)).isEqualTo(Optional.of(id));
@@ -59,7 +59,7 @@ public class UserServiceTest {
         final String password = "password";
         final String passwordHash = password;
         final User user = new User(id, username, realname, passwordHash);
-        when(userDao.get(username)).thenReturn(Optional.of(user));
+        when(userDao.getByName(username)).thenReturn(Optional.of(user));
         Argon2PasswordEncoder argonEncoder = new Argon2PasswordEncoder();
         UserService userService = new UserService(userDao, argonEncoder);
         assertThat(userService.validate(username,

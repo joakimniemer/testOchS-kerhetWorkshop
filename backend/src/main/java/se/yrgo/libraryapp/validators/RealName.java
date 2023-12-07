@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
 public final class RealName {
     private static Logger logger = LoggerFactory.getLogger(RealName.class);
     private static final Set<String> invalidWords = new HashSet<>();
+    private static Pattern regex = Pattern.compile("[a-zA-Z\\s]{2,}");
 
     static {
         try (InputStream is = RealName.class.getClassLoader().getResourceAsStream("bad_words.txt");
@@ -38,13 +40,18 @@ public final class RealName {
 
     /**
      * Validates if the given name is a valid and proper name.
+     * Only allowes a-zA-Z, minimum 2 letters.
      *
      * @param name the name to check
      * @return true if valid, false if not
      */
     public static boolean validate(String name) {
-        String cleanName = Utils.cleanAndUnLeet(name);
-        String[] words = cleanName.split("\\W+");
+        if (!regex.matcher(name).matches()) {
+            return false;
+        }
+
+//        String cleanName = Utils.cleanAndUnLeet(name);
+        String[] words = name.split("\\W+");
 
         for (int i = 0; i < words.length; i++) {
             if (invalidWords.contains(words[i])) {
