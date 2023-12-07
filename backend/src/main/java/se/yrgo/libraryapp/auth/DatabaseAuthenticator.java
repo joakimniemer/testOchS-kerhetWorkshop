@@ -1,5 +1,6 @@
 package se.yrgo.libraryapp.auth;
 
+import java.sql.SQLException;
 import java.util.UUID;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
@@ -36,7 +37,7 @@ public class DatabaseAuthenticator implements Authenticator<TokenCredentials> {
 
             credentials.setUserProfile(profile);
         }
-        catch (IllegalArgumentException ex) {
+        catch (IllegalArgumentException | SQLException ex) {
             // just ignore this
         }
     }

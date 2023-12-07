@@ -89,4 +89,11 @@ public class UserDaoIntegrationTest {
         boolean nameIsAvailable = userDao.isNameAvailable(username);
         assertThat(nameIsAvailable).isFalse();
     }
+    @Test
+    void insertUserAndRole() {
+//        final String username = "test";
+//        UserDao userDao = new UserDao(ds);
+//        boolean nameIsAvailable = userDao.isNameAvailable(username);
+//        assertThat(nameIsAvailable).isFalse();
+    }
 }

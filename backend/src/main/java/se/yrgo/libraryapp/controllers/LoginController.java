@@ -1,5 +1,6 @@
 package se.yrgo.libraryapp.controllers;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -39,7 +40,7 @@ public class LoginController {
 
     @POST
     public List<Role> login(Context context, @CookieParam("session") String
-            sessionCookie, LoginData login) {
+            sessionCookie, LoginData login) throws SQLException {
         if (isInvalidSession(sessionCookie)) {
             Optional<UserId> maybeUserId =
                     userService.validate(login.getUsername(), login.getPassword());
@@ -64,6 +65,8 @@ public class LoginController {
             return roleDao.get(userId);
         } catch (IllegalArgumentException | CredentialsException ex) {
             return List.of();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
