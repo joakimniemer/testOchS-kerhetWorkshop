@@ -5,6 +5,7 @@ import java.time.*;
 import java.util.*;
 import javax.inject.*;
 import javax.sql.*;
+
 import org.slf4j.*;
 import se.yrgo.libraryapp.entities.*;
 
@@ -19,8 +20,8 @@ public class BookDao {
 
     public Optional<Book> get(BookId id) {
         try (Connection conn = ds.getConnection();
-                PreparedStatement ps = createGetQuery(conn, id);
-                ResultSet rs = ps.executeQuery()) {
+             PreparedStatement ps = createGetQuery(conn, id);
+             ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
                 String title = rs.getString("title");
                 String author = rs.getString("author");
@@ -47,8 +48,8 @@ public class BookDao {
         }
 
         try (Connection conn = ds.getConnection();
-                PreparedStatement ps = createFindQuery(conn, isbn, title, author);
-                ResultSet rs = ps.executeQuery()) {
+             PreparedStatement ps = createFindQuery(conn, isbn, title, author);
+             ResultSet rs = ps.executeQuery()) {
             return getFullBookEdition(rs);
         } catch (SQLException ex) {
             logger.error("Unable to find books", ex);
@@ -59,8 +60,8 @@ public class BookDao {
     public Set<BookEdition> withClass(DdsClassification classification) {
 
         try (Connection conn = ds.getConnection();
-                PreparedStatement ps = createClassificationQuery(conn, classification);
-                ResultSet rs = ps.executeQuery()) {
+             PreparedStatement ps = createClassificationQuery(conn, classification);
+             ResultSet rs = ps.executeQuery()) {
             return getBookEdition(rs);
         } catch (SQLException ex) {
             logger.error("Unable to get books from class", ex);
@@ -70,8 +71,8 @@ public class BookDao {
 
     public List<BookLoan> loans(UserId user) {
         try (Connection conn = ds.getConnection();
-                PreparedStatement ps = createLoanQuery(conn, user);
-                ResultSet rs = ps.executeQuery()) {
+             PreparedStatement ps = createLoanQuery(conn, user);
+             ResultSet rs = ps.executeQuery()) {
             return getLoansFromSet(rs, user);
         } catch (SQLException ex) {
             logger.error("Uable to get book loans", ex);
@@ -86,9 +87,12 @@ public class BookDao {
                 + "JOIN user AS u ON bl.borrower_id = u.id WHERE return_date < CURDATE() "
                 + "ORDER BY return_date ASC";
 
+        //Uppdaterar till PreparedStatment, men denna borde inte skapt något större säkerhetshål ändå
+        //eftersom den inte använder någon input från användaren utan en färdig query.
         try (Connection conn = ds.getConnection();
-                Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(query)) {
+             PreparedStatement ps = conn.prepareStatement(query);
+//                Statement stmt = conn.createStatement();
+             ResultSet rs = ps.executeQuery()) {
             return getOverdueFromSet(rs);
         } catch (SQLException ex) {
             logger.error("Uable to get books", ex);
@@ -100,7 +104,7 @@ public class BookDao {
         String query = "INSERT INTO book_loan VALUES (?, ?, DATE_ADD(CURDATE(), INTERVAL 1 MONTH))";
 
         try (Connection conn = ds.getConnection();
-                PreparedStatement ps = conn.prepareStatement(query)) {
+             PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, book.getId());
             ps.setInt(2, user.getId());
             return ps.executeUpdate() == 1;
@@ -114,7 +118,7 @@ public class BookDao {
         String query = "DELETE FROM book_loan WHERE book_id = ?";
 
         try (Connection conn = ds.getConnection();
-                PreparedStatement ps = conn.prepareStatement(query)) {
+             PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, book.getId());
             return ps.executeUpdate() == 1;
         } catch (SQLException ex) {
@@ -223,7 +227,7 @@ public class BookDao {
 
     @SuppressWarnings("java:S2095")
     private static PreparedStatement createFindQuery(Connection conn, String isbn, String title,
-            String author) throws SQLException {
+                                                     String author) throws SQLException {
         String baseQuery =
                 "SELECT COUNT(b.book_id) AS count, be.isbn, title, author, dds_code, class "
                         + "FROM book_edition AS be " + "JOIN book AS b ON be.isbn = b.isbn "
@@ -259,7 +263,7 @@ public class BookDao {
 
     @SuppressWarnings("java:S2095")
     private static PreparedStatement createClassificationQuery(Connection conn,
-            DdsClassification classification) throws SQLException {
+                                                               DdsClassification classification) throws SQLException {
         String query =
                 "SELECT isbn, title, author FROM book_edition WHERE dds_code = ? GROUP BY isbn";
 

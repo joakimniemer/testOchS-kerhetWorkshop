@@ -19,7 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
 import se.yrgo.libraryapp.entities.User;
 import se.yrgo.libraryapp.entities.UserId;
 
@@ -59,7 +58,7 @@ public class UserDaoIntegrationTest {
         final String username = "test";
         final UserId userId = UserId.of(1);
         UserDao userDao = new UserDao(ds);
-        Optional<User> maybeUser = userDao.get(username);
+        Optional<User> maybeUser = userDao.getByName(username);
         assertThat(maybeUser.isPresent()).isTrue();
         assertThat(maybeUser.get().getId()).isEqualTo(userId);
     }
@@ -68,7 +67,7 @@ public class UserDaoIntegrationTest {
     void getUserByNameNotExisting() {
         final String username = "joakim";
         UserDao userDao = new UserDao(ds);
-        Optional<User> maybeUser = userDao.get(username);
+        Optional<User> maybeUser = userDao.getByName(username);
         assertThat(maybeUser.isPresent()).isFalse();
         assertThat(maybeUser).isEqualTo(Optional.empty());
     }
@@ -84,7 +83,7 @@ public class UserDaoIntegrationTest {
                 passwordHash);
 
         assertThat(registerSucceded).isTrue();
-        Optional<User> maybeUser = userDao.get(username);
+        Optional<User> maybeUser = userDao.getByName(username);
         assertThat(maybeUser.isPresent()).isTrue();
     }
 
@@ -117,5 +116,12 @@ public class UserDaoIntegrationTest {
         UserDao userDao = new UserDao(ds);
         boolean nameIsAvailable = userDao.isNameAvailable(username);
         assertThat(nameIsAvailable).isFalse();
+    }
+    @Test
+    void insertUserAndRole() {
+//        final String username = "test";
+//        UserDao userDao = new UserDao(ds);
+//        boolean nameIsAvailable = userDao.isNameAvailable(username);
+//        assertThat(nameIsAvailable).isFalse();
     }
 }

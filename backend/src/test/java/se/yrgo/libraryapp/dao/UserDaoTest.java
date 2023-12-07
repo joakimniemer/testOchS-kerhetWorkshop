@@ -12,10 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.pac4j.core.exception.AccountNotFoundException;
 import se.yrgo.libraryapp.entities.UserId;
 import se.yrgo.libraryapp.entities.User;
-import se.yrgo.libraryapp.services.UserService;
 
 @MockitoSettings(strictness = Strictness.STRICT_STUBS)
 public class UserDaoTest {
@@ -24,7 +22,7 @@ public class UserDaoTest {
     @Mock
     private Connection conn;
     @Mock
-    private Statement stmt;
+    private PreparedStatement ps;
     @Mock
     private ResultSet rs;
 
@@ -36,24 +34,24 @@ public class UserDaoTest {
         final String passwordHash = "xxx";
         final User expectedUser = new User(id, username, realname, passwordHash);
         when(ds.getConnection()).thenReturn(conn);
-        when(conn.createStatement()).thenReturn(stmt);
-        when(stmt.executeQuery(contains(username))).thenReturn(rs);
+        when(conn.prepareStatement("SELECT id, realname, password_hash FROM user WHERE user = ?")).thenReturn(ps);
+        when(ps.executeQuery()).thenReturn(rs);
         when(rs.next()).thenReturn(true, false);
         when(rs.getInt("id")).thenReturn(id.getId());
         when(rs.getString("realname")).thenReturn(realname);
         when(rs.getString("password_hash")).thenReturn(passwordHash);
         UserDao userDao = new UserDao(ds);
-        assertThat(userDao.get(username)).isEqualTo(Optional.of(expectedUser));
+        assertThat(userDao.getByName(username)).isEqualTo(Optional.of(expectedUser));
     }
 
     @Test
     void getNonExistingUser() throws SQLException {
         final String username = "testuser";
         when(ds.getConnection()).thenReturn(conn);
-        when(conn.createStatement()).thenReturn(stmt);
-        when(stmt.executeQuery(contains(username))).thenReturn(rs);
+        when(conn.prepareStatement("SELECT id, realname, password_hash FROM user WHERE user = ?")).thenReturn(ps);
+        when(ps.executeQuery()).thenReturn(rs);
         when(rs.next()).thenReturn(false);
         UserDao userDao = new UserDao(ds);
-        assertThat(userDao.get(username)).isEmpty();
+        assertThat(userDao.getByName(username)).isEmpty();
     }
 }
